@@ -1,8 +1,9 @@
 import React from "react";
 import { Box, Container, Text, Tab,Tabs
   ,TabList,TabPanel,TabPanels } from "@chakra-ui/react";
-import Login from "../components/Authentication/Login";
 import SignUp from "../components/Authentication/SignUp";
+import Login from "../components/Authentication/Login";
+
 
 const HomePage = () => {
   return (
@@ -21,7 +22,8 @@ const HomePage = () => {
           Welcome To Chatter
         </Text>
       </Box>
-      <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px">
+      <Box bg="white" w="100%" p={4}
+      m="20px 0 20px 0" borderRadius="lg" borderWidth="1px">
         <Tabs variant="soft-rounded" isFitted >
           <TabList mb="1em">
             <Tab>Login</Tab>
