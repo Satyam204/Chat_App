@@ -1,13 +1,14 @@
-const asynHandler = require("express-async-handler");
+const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const generateToken =require("../config/generateToken");
+const generateToken = require("../config/generateToken");
+const bcrypt = require("bcryptjs");
 
-const registerUser = asynHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
 
   if (!name || !email || !password) {
-    res.staus(400);
-    throw new Error("Please Fill The Require Fields");
+    res.status(400); // Corrected typo from 'staus' to 'status'
+    throw new Error("Please Fill The Required Fields");
   }
 
   const userExists = await User.findOne({ email });
@@ -17,10 +18,13 @@ const registerUser = asynHandler(async (req, res) => {
     throw new Error("Email Already Registered");
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   const user = await User.create({
     name,
     email,
-    password,
+    password: hashedPassword,
     pic,
   });
 
@@ -30,7 +34,7 @@ const registerUser = asynHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       pic: user.pic,
-      token:generateToken(user._id),
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -38,25 +42,22 @@ const registerUser = asynHandler(async (req, res) => {
   }
 });
 
-const authUser = asynHandler(async(req,res)=>{
-  const {email,password} =req.body;
+const authUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
 
-  const user = await User.findOne({email});
-
-  if(user && user.matchPassword(password)){
+  if (user && await bcrypt.compare(password, user.password)) {
     res.status(201).json({
       _id: user.id,
       name: user.name,
       email: user.email,
       pic: user.pic,
-      token:generateToken(user._id),
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
     throw new Error("Invalid User");
   }
-}
+});
 
-)
-
-module.exports = { registerUser,authUser };
+module.exports = { registerUser, authUser };
