@@ -8,3 +8,17 @@
     background-image: url(https://i.pinimg.com/originals/38/51/8c/38518cc76d1965753247e4d35f82037a.jpg);
     background-size: cover;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.281);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
