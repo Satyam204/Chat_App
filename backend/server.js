@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+const fileUpload = require("express-fileupload");
 
 const app = express();
 
@@ -11,6 +12,10 @@ dotenv.config();
 connectDB();
 
 app.use(express.json());
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/' 
+}));
 
 const PORT = process.env.PORT || 5000;
 

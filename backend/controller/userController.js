@@ -2,12 +2,21 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("cloudinary").v2;
+require('dotenv').config();
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.KEY, 
+  api_secret: process.env.SECRET 
+});
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, pic } = req.body;
+  const { name, email, password } = req.body;
+  const pic = req.files ? req.files.pic : null;
 
   if (!name || !email || !password) {
-    res.status(400); // Corrected typo from 'staus' to 'status'
+    res.status(400);
     throw new Error("Please Fill The Required Fields");
   }
 
@@ -18,6 +27,12 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("Email Already Registered");
   }
 
+  let picUrl = pic ? "" : "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png";
+  if (pic) {
+    const result = await cloudinary.uploader.upload(pic.tempFilePath);
+    picUrl = result.url;
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -25,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password: hashedPassword,
-    pic,
+    pic: picUrl,
   });
 
   if (user) {
@@ -46,7 +61,7 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (user && await bcrypt.compare(password, user.password)) {
+  if (user && (await bcrypt.compare(password, user.password))) {
     res.status(201).json({
       _id: user.id,
       name: user.name,
