@@ -5,6 +5,7 @@ const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const fileUpload = require("express-fileupload");
+const messageRoutes =require("./routes/messageRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/message",messageRoutes)
 
 app.use(notFound);
 app.use(errorHandler);
