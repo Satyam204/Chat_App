@@ -14,7 +14,7 @@ import animationData from "../animations/typing.json";
 
 import io from "socket.io-client";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://chatter-v1.onrender.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
