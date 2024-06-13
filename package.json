@@ -4,7 +4,9 @@
   "description": "for learning and learning😊",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon backend/server.js"
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix frontend && npm run build --prefix frontend"
   },
   "author": "satyam_pandey (git_satyam204)",
   "license": "ISC",
