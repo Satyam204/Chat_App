@@ -1,11 +1,10 @@
-import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { getSender } from "../config/ChatLogics";
+import { getSenderFull } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
-import { Button } from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 
 const MyChats = ({ fetchAgain }) => {
@@ -65,13 +64,6 @@ const MyChats = ({ fetchAgain }) => {
         alignItems="center"
       >
         My Chats
-        <Button
-          display="flex"
-          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-          rightIcon={<AddIcon />}
-        >
-          New Group Chat
-        </Button>
       </Box>
       <Box
         display="flex"
@@ -97,9 +89,14 @@ const MyChats = ({ fetchAgain }) => {
                 key={chat._id}
               >
                 <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName}
+                <Avatar
+                  mt="7px"
+                  mr={1}
+                  size="sm"
+                  cursor="pointer"
+                  src={getSenderFull(loggedUser, chat.users).pic}
+                />
+                  {getSenderFull(loggedUser, chat.users).name}
                 </Text>
               </Box>
             ))}
