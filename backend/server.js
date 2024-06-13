@@ -6,7 +6,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const fileUpload = require("express-fileupload");
 const messageRoutes = require("./routes/messageRoutes");
-const path =require("path");
+const path = require("path");
 
 const app = express();
 
@@ -27,19 +27,18 @@ app.use("/api/message", messageRoutes);
 
 //--------deployment--------------------------
 
-const dirname1=path.resolve();
+const dirname1 = path.resolve();
 
-if(process.env.NODE_ENV==="production"){
-  app.use(express.static(path.join(dirname1,"frontend/build")));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(dirname1, "frontend/build")));
 
-  app.get("*",(req,res)=>{
-    res.sendFile(path.resolve(dirname1,"frontend","build","index.html"));
-  })
-}
-else{
-  app.get("/",(req,res)=>{
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(dirname1, "frontend", "build", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
     res.send("API IS RUNNING");
-  })
+  });
 }
 //--------deployment--------------------------
 
@@ -51,13 +50,15 @@ const server = app.listen(PORT, () => console.log(`Server running on port ${PORT
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
-      origin: "http://localhost:3000",
-      // credentials: true,
+      origin: process.env.FRONTEND_URL || "http://localhost:3000", // Use environment variable for flexibility
+      methods: ["GET", "POST"], // Define allowed methods if necessary
+      credentials: true,
     },
 });
 
 io.on("connection", (socket) => {
     console.log("Connected to socket.io");
+
     socket.on("setup", (userData) => {
       socket.join(userData._id);
       socket.emit("connected");
